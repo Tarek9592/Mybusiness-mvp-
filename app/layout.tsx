@@ -1,33 +1,23 @@
-import "./globals.css";
-import React from "react";
-import Link from "next/link";
-
+// app/layout.tsx
 export const metadata = {
-  title: "mybusiness – مولد خطط أعمال",
-  description: "توليد خطط جاهزة (عربي/إنجليزي) للدواجن، الأعلاف، الزراعة، والمواشي.",
+  title: "MyBusiness MVP",
+  description: "Business Plan Generator (Arabic/English)",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ar" dir="rtl">
-      <body>
-        <header className="border-b border-zinc-800">
-          <nav className="container flex items-center justify-between py-4">
-            <Link href="/" className="font-extrabold text-xl">mybusiness</Link>
-            <div className="flex gap-4 text-sm">
-              <Link href="/pricing">الأسعار</Link>
-              <Link href="/about">من نحن</Link>
-              <Link href="/contact">تواصل</Link>
-              <Link href="/dashboard">لوحة التحكم</Link>
-            </div>
+      <body style={{ margin: 0, fontFamily: "Arial, sans-serif", background: "#f5f5f5", color: "#333" }}>
+        <header style={{ background: "#111", color: "#fff", padding: "10px 16px" }}>
+          <nav style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <a href="/" style={{ color: "#fff", textDecoration: "none" }}>الرئيسية</a>
+            <a href="/about" style={{ color: "#ccc", textDecoration: "none" }}>عن المنصة</a>
+            <a href="/pricing" style={{ color: "#ccc", textDecoration: "none" }}>الأسعار</a>
+            <a href="/dashboard" style={{ color: "#ccc", textDecoration: "none" }}>لوحة التحكم</a>
+            <a href="/contact" style={{ color: "#ccc", textDecoration: "none" }}>تواصل</a>
           </nav>
         </header>
         {children}
-        <footer className="border-t border-zinc-800 mt-16">
-          <div className="container py-6 text-sm" style={{color:"#9ca3af"}}>
-            © {new Date().getFullYear()} mybusiness — نسخة تجريبية (MVP)
-          </div>
-        </footer>
       </body>
     </html>
   );
