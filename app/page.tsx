@@ -1,67 +1,92 @@
+// app/page.tsx
 "use client";
-import Link from "next/link";
-import { useState } from "react";
+import React from "react";
 
-export default function Page() {
-  const [capital, setCapital] = useState<number>(10000);
-  const [planPreview, setPlanPreview] = useState<string>("");
+export default function Home() {
+  const [type, setType] = React.useState("تربية دواجن لحم");
+  const [country, setCountry] = React.useState("مصر");
+  const [city, setCity] = React.useState("الفيوم");
+  const [capital, setCapital] = React.useState(10000);
+  const [loading, setLoading] = React.useState(false);
+  const [preview, setPreview] = React.useState<string>("");
 
-  const generatePreview = async () => {
-    const res = await fetch("/api/generatePlan", {
-      method: "POST",
-      body: JSON.stringify({ type: "تربية دواجن لحم", country: "مصر", city: "الفيوم", capital })
-    });
-    const data = await res.json();
-    setPlanPreview(data.preview);
-  };
+  async function generate() {
+    try {
+      setLoading(true);
+      setPreview("");
+      const res = await fetch("/api/generatePlan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type, country, city, capital }),
+      });
+      const json = await res.json();
+      setPreview(json.preview || "لم يتم إرجاع نص.");
+    } catch (e) {
+      setPreview("حصل خطأ.. جرّب تاني.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <main className="container py-12 space-y-10">
-      <section className="text-center space-y-4">
-        <div className="inline-block text-xs" style={{background:"#064e3b",color:"#6ee7b7",padding:"4px 10px",borderRadius:"999px"}}>MVP يعمل الآن</div>
-        <h1 className="text-3xl md:text-5xl font-extrabold leading-tight">
-          خطط أعمال جاهزة للعربي وأفريقيا — في دقيقة
-        </h1>
-        <p className="max-w-2xl mx-auto" style={{color:"#d1d5db"}}>
-          ابدأ بالدواجن، مصانع الأعلاف، زراعة المدخلات، والمواشي. جرّب معاينة الخطة مجانًا أو اشترك لتحميل PDF.
-        </p>
-        <div className="flex gap-3 justify-center">
-          <Link className="btn" href="/pricing">الأسعار</Link>
-          <button className="btn" onClick={generatePreview}>جرّب توليد خطة</button>
-        </div>
-      </section>
+    <main style={{ padding: "20px", maxWidth: 800, margin: "0 auto" }}>
+      <h1>مولِّد خطط الأعمال – النسخة التجريبية</h1>
+      <p>ادخل البيانات واضغط توليد المعاينة.</p>
 
-      <section className="grid md:grid-cols-2 gap-6">
-        <div className="card p-6 space-y-3">
-          <h2 className="text-xl font-bold">تجربة سريعة</h2>
-          <label className="text-sm" style={{color:"#9ca3af"}}>رأس المال (دولار)</label>
+      <div style={{ display: "grid", gap: 12, marginTop: 16 }}>
+        <label>
+          نوع المشروع
+          <input
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            style={{ width: "100%", padding: 8 }}
+          />
+        </label>
+
+        <label>
+          الدولة
+          <input
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            style={{ width: "100%", padding: 8 }}
+          />
+        </label>
+
+        <label>
+          المدينة
+          <input
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            style={{ width: "100%", padding: 8 }}
+          />
+        </label>
+
+        <label>
+          رأس المال (دولار)
           <input
             type="number"
-            className="w-full rounded-xl"
-            style={{background:"#0a0a0a",border:"1px solid #1f2937",padding:"8px 12px"}}
             value={capital}
-            onChange={(e)=>setCapital(parseInt(e.target.value || "0"))}
+            onChange={(e) => setCapital(Number(e.target.value))}
+            style={{ width: "100%", padding: 8 }}
           />
-          <button className="btn w-full" onClick={generatePreview}>توليد معاينة</button>
-          {planPreview && (
-            <textarea readOnly className="w-full h-56 mt-3 rounded-xl"
-              style={{background:"#0a0a0a",border:"1px solid #1f2937",padding:"12px"}}
-              value={planPreview}
-            />
-          )}
-        </div>
+        </label>
 
-        <div className="card p-6 space-y-3">
-          <h2 className="text-xl font-bold">المشروعات المدعومة</h2>
-          <ul className="list-disc pr-6" style={{color:"#d1d5db"}}>
-            <li>🐔 تربية دواجن لحم</li>
-            <li>🏭 مصانع أعلاف (صغير/متوسط)</li>
-            <li>🌱 زراعة مدخلات الأعلاف (ذرة/صويا)</li>
-            <li>🐄 تربية ماشية (تسمين)</li>
-          </ul>
-          <p className="text-sm" style={{color:"#9ca3af"}}>المزيد قريبًا.</p>
-        </div>
-      </section>
+        <button
+          onClick={generate}
+          disabled={loading}
+          style={{
+            padding: "10px 16px",
+            cursor: "pointer",
+            opacity: loading ? 0.6 : 1,
+          }}
+        >
+          {loading ? "جاري التوليد..." : "توليد المعاينة"}
+        </button>
+      </div>
+
+      <div style={{ whiteSpace: "pre-wrap", marginTop: 24, background: "#fff", padding: 16, borderRadius: 8 }}>
+        {preview ? preview : "سيظهر هنا النص بعد التوليد."}
+      </div>
     </main>
   );
 }
