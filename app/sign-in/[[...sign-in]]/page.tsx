@@ -1,2 +1,9 @@
 import { SignIn } from "@clerk/nextjs";
-export default function Page(){ return <div className="container py-12"><SignIn routing="path" path="/sign-in" /></div>; }
+
+export default function Page() {
+  return (
+    <div style={{ display: "flex", justifyContent: "center", padding: "50px" }}>
+      <SignIn />
+    </div>
+  );
+}
