@@ -1,24 +1,43 @@
-// app/layout.tsx
+import "./globals.css";
+import Link from "next/link";
+import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+
 export const metadata = {
-  title: "MyBusiness MVP",
-  description: "Business Plan Generator (Arabic/English)",
+  title: "mybusiness – Business Plans Pro",
+  description: "Professional business plan generator for MENA & Africa.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ar" dir="rtl">
-      <body style={{ margin: 0, fontFamily: "Arial, sans-serif", background: "#f5f5f5", color: "#333" }}>
-        <header style={{ background: "#111", color: "#fff", padding: "10px 16px" }}>
-          <nav style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <a href="/" style={{ color: "#fff", textDecoration: "none" }}>الرئيسية</a>
-            <a href="/about" style={{ color: "#ccc", textDecoration: "none" }}>عن المنصة</a>
-            <a href="/pricing" style={{ color: "#ccc", textDecoration: "none" }}>الأسعار</a>
-            <a href="/dashboard" style={{ color: "#ccc", textDecoration: "none" }}>لوحة التحكم</a>
-            <a href="/contact" style={{ color: "#ccc", textDecoration: "none" }}>تواصل</a>
-          </nav>
-        </header>
-        {children}
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="ar" dir="rtl">
+        <body>
+          <header className="border-b border-neutral-800">
+            <nav className="container flex items-center justify-between py-4">
+              <Link href="/" className="text-xl font-extrabold">mybusiness</Link>
+              <div className="flex items-center gap-4 text-sm text-neutral-300">
+                <Link href="/pricing">الأسعار</Link>
+                <Link href="/about">من نحن</Link>
+                <Link href="/contact">تواصل</Link>
+                <Link href="/dashboard">لوحة التحكم</Link>
+                <SignedOut>
+                  <Link className="btn" href="/sign-in">دخول</Link>
+                  <Link className="btn" href="/sign-up">حساب جديد</Link>
+                </SignedOut>
+                <SignedIn>
+                  <UserButton appearance={{ elements: { userButtonAvatarBox: "w-8 h-8" }}} />
+                </SignedIn>
+              </div>
+            </nav>
+          </header>
+          {children}
+          <footer className="border-t border-neutral-800 mt-16">
+            <div className="container py-6 text-sm text-neutral-400">
+              © {new Date().getFullYear()} mybusiness — Pro
+            </div>
+          </footer>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
